@@ -1,24 +1,47 @@
 import React, { Key } from 'react';
-import { Box, Newline, Text } from 'ink';
+import { Box, Newline, Text, useInput } from 'ink';
+import { useGameStore } from '../state/state';
+import { intRange } from '../utils/utils';
 
-const randomEmoji = (): string => {
-  const r = Math.random();
-  return r < 0.1 ? `💣` : r < 0.6 ? `🔲` : r < 0.8 ? `🚩` : `🔲`;
+// export const selector = ({ goDown, goUp, goLeft, goRight, width, height, position: [x, y] }: GameStoreType) => ({
+//   goDown,
+//   goUp,
+//   goLeft,
+//   goRight,
+//   width,
+//   height,
+//   x,
+//   y,
+// });
+
+export const Field: React.FC = () => {
+  // fixme can't import shallow
+  const {
+    position: [x, y],
+    height,
+    width,
+    goDown,
+    goLeft,
+    goRight,
+    goUp,
+  } = useGameStore();
+
+  useInput((input, { downArrow, leftArrow, rightArrow, upArrow }) =>
+    leftArrow ? goLeft() : rightArrow ? goRight() : upArrow ? goUp() : downArrow ? goDown() : undefined
+  );
+
+  return (
+    <Box flexDirection={`column`}>
+      <Text>
+        {intRange(width).map((i) => (
+          <Text key={i as Key}>
+            {intRange(height).map((j) => (
+              <Text key={j as Key}>{i === x && j === y ? `🟩` : `⬜`}</Text>
+            ))}
+            <Newline />
+          </Text>
+        ))}
+      </Text>
+    </Box>
+  );
 };
-
-const size = 20;
-
-export const Field: React.FC = () => (
-  <Box flexDirection={`column`}>
-    <Text>
-      {Array.from({ length: size }).map((_, i) => (
-        <Text key={i as Key}>
-          {Array.from({ length: size }).map((_, j) => (
-            <Text key={j as Key}>{randomEmoji()}</Text>
-          ))}
-          <Newline />
-        </Text>
-      ))}
-    </Text>
-  </Box>
-);
