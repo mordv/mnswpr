@@ -1,6 +1,5 @@
-import React, { FC, Key } from 'react';
+import React, { Key } from 'react';
 import { Box, Newline, Text } from 'ink';
-import { CliFlagsType } from './cli';
 
 const randomEmoji = (): string => {
   const r = Math.random();
@@ -8,7 +7,8 @@ const randomEmoji = (): string => {
 };
 
 const size = 20;
-export const App: FC<CliFlagsType> = () => (
+
+export const Field: React.FC = () => (
   <Box flexDirection={`column`}>
     <Text>
       {Array.from({ length: size }).map((_, i) => (
