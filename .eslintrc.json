@@ -1,0 +1,60 @@
+{
+  "root": true,
+  "globals": {
+    "process": true
+  },
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:react/recommended", "prettier"],
+  "plugins": ["@typescript-eslint", "prettier", "react", "react-hooks", "prefer-arrow"],
+  "env": {
+    "browser": true,
+    "jasmine": true,
+    "jest": true,
+    "es6": true
+  },
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "prettier/prettier": "warn",
+    "react/prop-types": "off",
+    "react/jsx-no-bind": "off",
+    "react/no-array-index-key": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "@typescript-eslint/no-empty-interface": "warn",
+    "@typescript-eslint/no-empty-function": "off",
+    "quotes": "off",
+    "@typescript-eslint/quotes": ["warn", "backtick"],
+    "react/jsx-curly-brace-presence": [
+      "warn",
+      {
+        "props": "always",
+        "children": "never"
+      }
+    ],
+    "prefer-arrow/prefer-arrow-functions": [
+      "warn",
+      {
+        "disallowPrototype": true,
+        "singleReturnOnly": false,
+        "classPropertiesAllowed": true,
+        "allowStandaloneDeclarations": false
+      }
+    ],
+    "prefer-arrow-callback": [
+      "warn",
+      {
+        "allowNamedFunctions": false,
+        "allowUnboundThis": false
+      }
+    ],
+    "func-style": ["warn", "expression"],
+    "arrow-body-style": ["warn", "as-needed"],
+    "object-shorthand": "warn"
+  },
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  },
+  "parser": "@typescript-eslint/parser"
+}
