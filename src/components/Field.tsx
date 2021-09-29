@@ -1,7 +1,8 @@
 import React, { Key } from 'react';
 import { Box, Newline, Text, useInput } from 'ink';
-import { useGameStore } from '../state/state';
+import { CellStateType, MineAmountType, useGameStore } from '../state/state';
 import { intRange } from '../utils/utils';
+import { theme } from '../styles/theme';
 
 // export const selector = ({ goDown, goUp, goLeft, goRight, width, height, position: [x, y] }: GameStoreType) => ({
 //   goDown,
@@ -14,6 +15,8 @@ import { intRange } from '../utils/utils';
 //   y,
 // });
 
+const mineNumberToColor = (amount: MineAmountType): string => theme.colors.numbers[amount - 1];
+
 export const Field: React.FC = () => {
   // fixme can't import shallow
   const {
@@ -24,19 +27,34 @@ export const Field: React.FC = () => {
     goLeft,
     goRight,
     goUp,
+    cells,
+    flag,
+    open,
   } = useGameStore();
 
   useInput((input, { downArrow, leftArrow, rightArrow, upArrow }) =>
-    leftArrow ? goLeft() : rightArrow ? goRight() : upArrow ? goUp() : downArrow ? goDown() : undefined
+    leftArrow
+      ? goLeft()
+      : rightArrow
+      ? goRight()
+      : upArrow
+      ? goUp()
+      : downArrow
+      ? goDown()
+      : input.toLowerCase() === `f`
+      ? flag()
+      : input.toLowerCase() === ` `
+      ? open()
+      : undefined
   );
 
   return (
     <Box flexDirection={`column`}>
-      <Text>
+      <Text backgroundColor={theme.colors.background}>
         {intRange(width).map((i) => (
           <Text key={i as Key}>
             {intRange(height).map((j) => (
-              <Text key={j as Key}>{i === x && j === y ? `🟩` : `⬜`}</Text>
+              <Cell key={j as Key} state={cells[i][j]} selected={i === x && j === y} />
             ))}
             <Newline />
           </Text>
@@ -45,3 +63,28 @@ export const Field: React.FC = () => {
     </Box>
   );
 };
+
+interface CellProps {
+  state: CellStateType;
+  selected?: boolean;
+}
+
+// todo don't like than the number isn't centered.
+const Cell: React.FC<CellProps> = ({ state: { flagged, mine, opened, minesAround }, selected }) => (
+  <Text backgroundColor={selected ? `#ffffff` : undefined}>
+    {minesAround > 0 && opened ? (
+      <Text color={mineNumberToColor(minesAround)} bold>
+        {` `}
+        {minesAround}
+      </Text>
+    ) : flagged ? (
+      `🚩`
+    ) : opened && !mine ? (
+      `  `
+    ) : opened && mine ? (
+      `💣`
+    ) : (
+      `⬛`
+    )}
+  </Text>
+);

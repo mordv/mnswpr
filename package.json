@@ -21,7 +21,8 @@
     "ink": "^3.0.9",
     "meow": "^9.0.0",
     "react": "^17.0.2",
-    "zustand": "^3.5.11"
+    "zustand": "^3.5.11",
+    "immer": "^9.0.6"
   },
   "devDependencies": {
     "@ava/typescript": "^2.0.0",
