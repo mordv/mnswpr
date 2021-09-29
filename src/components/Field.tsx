@@ -1,6 +1,6 @@
 import React, { Key } from 'react';
 import { Box, Newline, Text, useInput } from 'ink';
-import { CellStateType, MineAmountType, useGameStore } from '../state/state';
+import { CellStateType, MinesAroundType, useGameStore } from '../state/state';
 import { intRange } from '../utils/utils';
 import { theme } from '../styles/theme';
 
@@ -15,7 +15,7 @@ import { theme } from '../styles/theme';
 //   y,
 // });
 
-const mineNumberToColor = (amount: MineAmountType): string => theme.colors.numbers[amount - 1];
+const mineNumberToColor = (amount: MinesAroundType): string => theme.colors.numbers[amount - 1];
 
 export const Field: React.FC = () => {
   // fixme can't import shallow
