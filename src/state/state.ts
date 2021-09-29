@@ -43,6 +43,14 @@ const generateMinesPositions = (width: number, height: number, minesCount: numbe
   return res;
 };
 
+const generateNeighbourIndexes = (i: number, j: number, width: number, height: number): [number, number][] =>
+  [-1, 0, 1]
+    .map((x) => [-1, 0, 1].map((y) => [x, y]))
+    .flat()
+    .filter(([x, y]) => !(x === 0 && y === 0))
+    .map(([x, y]) => [i + x, j + y] as [number, number])
+    .filter(([x, y]) => x >= 0 && x < height && y >= 0 && y < width);
+
 const generateField = (width: number, height: number, minesCount: number) => {
   const cells = intRange(height).map(() => intRange(width).map(() => ({} as CellStateType)));
   generateMinesPositions(width, height, minesCount).forEach(([x, y]) => (cells[x][y].mine = true));
@@ -50,15 +58,26 @@ const generateField = (width: number, height: number, minesCount: number) => {
     row.forEach((cell, j) => {
       if (!cell.mine) {
         cell.minesAround =
-          [-1, 0, 1]
-            .map((x) => [-1, 0, 1].map((y) => [x, y] as [number, number]))
-            .flat() // generate indexes to calculate neighbourhood (we already checked that current cell isn't a mine, so I don't bother filter [0,0])
-            .map(([x, y]) => (cells[i + x]?.[j + y]?.mine ? 1 : 0) as 0 | 1)
+          generateNeighbourIndexes(i, j, width, height)
+            .map(([x, y]) => (cells[x][y].mine ? 1 : 0))
             .reduce((acc, current) => (acc + current) as MinesAroundType, 0) || undefined;
       }
     })
   );
   return cells;
+};
+
+const openCellMutable = (cells: CellStateType[][], x: number, y: number, width: number, height: number) => {
+  const cell = cells[x][y];
+  cell.opened = true;
+  !cell.minesAround &&
+    !cell.mine &&
+    generateNeighbourIndexes(x, y, width, height).forEach(([i, j]) => {
+      const { opened, flagged, mine } = cells[i][j];
+      if (!opened && !flagged && !mine) {
+        openCellMutable(cells, i, j, width, height);
+      }
+    });
 };
 
 /**
@@ -93,10 +112,12 @@ export const useGameStore = create<GameStoreType>((set) => ({
       produce((draft) => {
         const [x, y] = draft.position;
         const cell = draft.cells[x][y];
-        if (cell.mine) {
-          // todo BOOM!
-        } else if (!cell.flagged) {
-          cell.opened = true;
+        if (!cell.opened) {
+          if (cell.mine) {
+            // todo BOOM!
+          } else if (!cell.flagged) {
+            openCellMutable(draft.cells, x, y, draft.width, draft.height);
+          }
         }
       })
     ),
