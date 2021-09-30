@@ -63,7 +63,7 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
   open: () =>
     gameActive(get().gameStatus) &&
     set(
-      produce((draft) => {
+      produce<GameStoreType>((draft) => {
         const [x, y] = draft.position;
         if (draft.gameStatus === `waitingForFirstHit`) {
           draft.cells = generateGameField(draft.width, draft.height, draft.minesCount, draft.position);
@@ -77,6 +77,10 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
               draft.gameStatus = `gameOver`;
             } else {
               openCellMutable(draft.cells, x, y, draft.width, draft.height);
+              if (draft.cells.flat().filter((f) => !f.opened).length === get().minesCount) {
+                draft.cells.flat().forEach((c) => (c.flagged = true));
+                draft.gameStatus = `win`;
+              }
             }
           }
         }
