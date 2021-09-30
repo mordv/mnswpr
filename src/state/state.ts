@@ -9,6 +9,7 @@ export interface CellStateType {
   flagged?: boolean;
   opened?: boolean;
   minesAround?: MinesAroundType;
+  diedAt?: boolean;
 }
 
 export type GameStatusType = 'settings' | 'waitingForFirstHit' | 'game' | 'gameOver' | 'win';
@@ -40,11 +41,16 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
   minesCount: 0,
   position: [0, 0],
   cells: [],
-  goLeft: () => set(({ width, position: [x, y] }) => ({ position: [x, subInRing(y, width)] })), // todo jump over opened cells?
-  goRight: () => set(({ width, position: [x, y] }) => ({ position: [x, addInRing(y, width)] })),
-  goUp: () => set(({ height, position: [x, y] }) => ({ position: [subInRing(x, height), y] })),
-  goDown: () => set(({ height, position: [x, y] }) => ({ position: [addInRing(x, height), y] })),
+  goLeft: () =>
+    gameActive(get().gameStatus) && set(({ width, position: [x, y] }) => ({ position: [x, subInRing(y, width)] })), // todo jump over opened cells?
+  goRight: () =>
+    gameActive(get().gameStatus) && set(({ width, position: [x, y] }) => ({ position: [x, addInRing(y, width)] })),
+  goUp: () =>
+    gameActive(get().gameStatus) && set(({ height, position: [x, y] }) => ({ position: [subInRing(x, height), y] })),
+  goDown: () =>
+    gameActive(get().gameStatus) && set(({ height, position: [x, y] }) => ({ position: [addInRing(x, height), y] })),
   flag: () =>
+    gameActive(get().gameStatus) &&
     set(
       produce((draft) => {
         const [x, y] = draft.position;
@@ -55,6 +61,7 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
       })
     ),
   open: () =>
+    gameActive(get().gameStatus) &&
     set(
       produce((draft) => {
         const [x, y] = draft.position;
@@ -64,10 +71,11 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
           openCellMutable(draft.cells, x, y, draft.width, draft.height);
         } else {
           const cell = draft.cells[x][y];
-          if (!cell.opened) {
+          if (!cell.opened && !cell.flagged) {
             if (cell.mine) {
-              // todo BOOM!
-            } else if (!cell.flagged) {
+              cell.diedAt = true;
+              draft.gameStatus = `gameOver`;
+            } else {
               openCellMutable(draft.cells, x, y, draft.width, draft.height);
             }
           }
@@ -85,6 +93,8 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
     }
   },
 }));
+
+const gameActive = (status: GameStatusType) => ([`game`, `waitingForFirstHit`] as GameStatusType[]).includes(status);
 
 // Beginner: 8*8 10 mines
 // Intermediate: 16*16 40 mines
@@ -151,7 +161,7 @@ const openCellMutable = (cells: CellStateType[][], x: number, y: number, width: 
   const cell = cells[x][y];
   cell.opened = true;
   !cell.minesAround &&
-    !cell.mine &&
+    !cell.mine && // fixme don't open flagged cells at first hit;
     generateNeighbourIndexes(x, y, width, height).forEach(([i, j]) => {
       const { opened, flagged, mine } = cells[i][j];
       if (!opened && !flagged && !mine) {

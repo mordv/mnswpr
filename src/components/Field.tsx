@@ -1,6 +1,6 @@
 import React, { Key } from 'react';
 import { Box, Newline, Text, useInput } from 'ink';
-import { CellStateType, MinesAroundType, useGameStore } from '../state/state';
+import { CellStateType, GameStatusType, MinesAroundType, useGameStore } from '../state/state';
 import { intRange } from '../utils/utils';
 import { theme } from '../styles/theme';
 
@@ -16,6 +16,17 @@ import { theme } from '../styles/theme';
 // });
 
 const mineNumberToColor = (amount: MinesAroundType): string => theme.colors.numbers[amount - 1];
+const statusToSmile = (status: GameStatusType): string => {
+  switch (status) {
+    case `waitingForFirstHit`:
+    case `game`:
+      return `🙂`;
+    case `gameOver`:
+      return `💀`;
+    case `win`:
+      return `😎`;
+  }
+};
 
 export const Field: React.FC = () => {
   // fixme can't import shallow
@@ -31,6 +42,7 @@ export const Field: React.FC = () => {
     flag,
     open,
     restartGame,
+    gameStatus,
   } = useGameStore();
 
   useInput((input, { ctrl, downArrow, leftArrow, rightArrow, upArrow }) =>
@@ -51,13 +63,27 @@ export const Field: React.FC = () => {
       : undefined
   );
 
+  const fill = intRange(width - 1)
+    .map(() => ` `)
+    .join(``);
   return (
     <Box flexDirection={`column`}>
+      <Text backgroundColor={theme.colors.background}>
+        {fill}
+        {statusToSmile(gameStatus)}
+        {fill}
+      </Text>
+      <Box />
       <Text backgroundColor={theme.colors.background}>
         {intRange(height).map((i) => (
           <Text key={i as Key}>
             {intRange(width).map((j) => (
-              <Cell key={j as Key} state={cells[i][j]} selected={i === x && j === y} />
+              <Cell
+                key={j as Key}
+                gameOver={gameStatus === `gameOver`}
+                state={cells[i][j]}
+                selected={i === x && j === y}
+              />
             ))}
             <Newline />
           </Text>
@@ -69,23 +95,24 @@ export const Field: React.FC = () => {
 
 interface CellProps {
   state: CellStateType;
+  gameOver: boolean;
   selected?: boolean;
 }
 
 // todo don't like than the number isn't centered.
-const Cell: React.FC<CellProps> = ({ state: { flagged, mine, opened, minesAround }, selected }) => (
-  <Text backgroundColor={selected ? `#ffffff` : undefined}>
+const Cell: React.FC<CellProps> = ({ state: { flagged, mine, opened, minesAround, diedAt }, selected, gameOver }) => (
+  <Text backgroundColor={gameOver && diedAt ? `#ff0000` : selected ? `#ffffff` : undefined}>
     {minesAround > 0 && opened ? (
       <Text color={mineNumberToColor(minesAround)} bold>
         {` `}
         {minesAround}
       </Text>
-    ) : flagged ? (
-      `🚩`
     ) : opened && !mine ? (
       `  `
-    ) : opened && mine ? (
+    ) : (opened || gameOver) && mine ? (
       `💣`
+    ) : flagged ? (
+      `🚩`
     ) : (
       `⬛`
     )}
