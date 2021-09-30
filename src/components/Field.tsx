@@ -1,8 +1,9 @@
 import React, { Key } from 'react';
 import { Box, Newline, Text, useInput } from 'ink';
-import { CellStateType, GameStatusType, MinesAroundType, useGameStore } from '../state/state';
+import { CellStateType, MinesAroundType, useGameStore } from '../state/state';
 import { intRange } from '../utils/utils';
 import { theme } from '../styles/theme';
+import { FieldHeader } from './FieldHeader';
 
 // export const selector = ({ goDown, goUp, goLeft, goRight, width, height, position: [x, y] }: GameStoreType) => ({
 //   goDown,
@@ -16,17 +17,6 @@ import { theme } from '../styles/theme';
 // });
 
 const mineNumberToColor = (amount: MinesAroundType): string => theme.colors.numbers[amount - 1];
-const statusToSmile = (status: GameStatusType): string => {
-  switch (status) {
-    case `waitingForFirstHit`:
-    case `game`:
-      return `🙂`;
-    case `gameOver`:
-      return `💀`;
-    case `win`:
-      return `😎`;
-  }
-};
 
 export const Field: React.FC = () => {
   // fixme can't import shallow
@@ -63,16 +53,9 @@ export const Field: React.FC = () => {
       : undefined
   );
 
-  const fill = intRange(width - 1)
-    .map(() => ` `)
-    .join(``);
   return (
     <Box flexDirection={`column`}>
-      <Text backgroundColor={theme.colors.background}>
-        {fill}
-        {statusToSmile(gameStatus)}
-        {fill}
-      </Text>
+      <FieldHeader />
       <Box />
       <Text backgroundColor={theme.colors.background}>
         {intRange(height).map((i) => (

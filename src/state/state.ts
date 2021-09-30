@@ -16,6 +16,7 @@ export type GameStatusType = 'settings' | 'waitingForFirstHit' | 'game' | 'gameO
 
 export interface GameStoreType extends State {
   gameStatus: GameStatusType;
+  startedAt: Date;
   width: number;
   height: number;
   minesCount: number;
@@ -34,6 +35,8 @@ export interface GameStoreType extends State {
 export const difficulties = [`beginner`, `intermediate`, `expert`] as const;
 export type DifficultyType = typeof difficulties[number];
 
+export const flagCountSelector = (state: GameStoreType): number => state.cells.flat().filter((f) => f.flagged).length;
+
 export const useGameStore = create<GameStoreType>((set, get) => ({
   gameStatus: `settings`,
   width: 0,
@@ -41,6 +44,7 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
   minesCount: 0,
   position: [0, 0],
   cells: [],
+  startedAt: new Date(),
   goLeft: () =>
     gameActive(get().gameStatus) && set(({ width, position: [x, y] }) => ({ position: [x, subInRing(y, width)] })), // todo jump over opened cells?
   goRight: () =>
@@ -52,7 +56,7 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
   flag: () =>
     gameActive(get().gameStatus) &&
     set(
-      produce((draft) => {
+      produce<GameStoreType>((draft) => {
         const [x, y] = draft.position;
         const cell = draft.cells[x][y];
         if (!cell.opened) {
@@ -77,8 +81,9 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
               draft.gameStatus = `gameOver`;
             } else {
               openCellMutable(draft.cells, x, y, draft.width, draft.height);
-              if (draft.cells.flat().filter((f) => !f.opened).length === get().minesCount) {
-                draft.cells.flat().forEach((c) => (c.flagged = true));
+              const closed = draft.cells.flat().filter((f) => !f.opened);
+              if (closed.length === get().minesCount) {
+                closed.forEach((c) => (c.flagged = true));
                 draft.gameStatus = `win`;
               }
             }
@@ -88,17 +93,25 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
     ),
   startGame: (d) => {
     const [width, height, minesCount] = getGameSettings(d);
-    set({ width, height, minesCount, cells: generateEmptyCells(width, height), gameStatus: `waitingForFirstHit` });
+    set({
+      width,
+      height,
+      minesCount,
+      cells: generateEmptyCells(width, height),
+      gameStatus: `waitingForFirstHit`,
+      startedAt: new Date(),
+    });
   },
   restartGame: () => {
     const { gameStatus, width, height } = get();
     if (([`game`, `gameOver`, `win`] as GameStatusType[]).includes(gameStatus)) {
-      set({ cells: generateEmptyCells(width, height), gameStatus: `waitingForFirstHit` });
+      set({ cells: generateEmptyCells(width, height), gameStatus: `waitingForFirstHit`, startedAt: new Date() });
     }
   },
 }));
 
-const gameActive = (status: GameStatusType) => ([`game`, `waitingForFirstHit`] as GameStatusType[]).includes(status);
+export const gameActive = (status: GameStatusType): boolean =>
+  ([`game`, `waitingForFirstHit`] as GameStatusType[]).includes(status);
 
 // Beginner: 8*8 10 mines
 // Intermediate: 16*16 40 mines
