@@ -11,10 +11,10 @@ export interface CellStateType {
   minesAround?: MinesAroundType;
 }
 
-export type GameModeType = 'settings' | 'waitingForFirstHit' | 'game' | 'gameOver' | 'win';
+export type GameStatusType = 'settings' | 'waitingForFirstHit' | 'game' | 'gameOver' | 'win';
 
 export interface GameStoreType extends State {
-  gameMode: GameModeType;
+  gameStatus: GameStatusType;
   width: number;
   height: number;
   minesCount: number;
@@ -34,7 +34,7 @@ export const difficulties = [`beginner`, `intermediate`, `expert`] as const;
 export type DifficultyType = typeof difficulties[number];
 
 export const useGameStore = create<GameStoreType>((set, get) => ({
-  gameMode: `settings`,
+  gameStatus: `settings`,
   width: 0,
   height: 0,
   minesCount: 0,
@@ -58,9 +58,9 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
     set(
       produce((draft) => {
         const [x, y] = draft.position;
-        if (draft.gameMode === `waitingForFirstHit`) {
+        if (draft.gameStatus === `waitingForFirstHit`) {
           draft.cells = generateGameField(draft.width, draft.height, draft.minesCount, draft.position);
-          draft.gameMode = `game`;
+          draft.gameStatus = `game`;
           openCellMutable(draft.cells, x, y, draft.width, draft.height);
         } else {
           const cell = draft.cells[x][y];
@@ -76,12 +76,12 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
     ),
   startGame: (d) => {
     const [width, height, minesCount] = getGameSettings(d);
-    set({ width, height, minesCount, cells: generateEmptyCells(width, height), gameMode: `waitingForFirstHit` });
+    set({ width, height, minesCount, cells: generateEmptyCells(width, height), gameStatus: `waitingForFirstHit` });
   },
   restartGame: () => {
-    const { gameMode, width, height } = get();
-    if (([`game`, `gameOver`, `win`] as GameModeType[]).includes(gameMode)) {
-      set({ cells: generateEmptyCells(width, height), gameMode: `waitingForFirstHit` });
+    const { gameStatus, width, height } = get();
+    if (([`game`, `gameOver`, `win`] as GameStatusType[]).includes(gameStatus)) {
+      set({ cells: generateEmptyCells(width, height), gameStatus: `waitingForFirstHit` });
     }
   },
 }));
