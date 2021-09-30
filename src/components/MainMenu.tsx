@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Gradient from 'ink-gradient';
 import SelectInput from 'ink-select-input';
 import { Box, Text } from 'ink';
@@ -10,8 +10,8 @@ export const MainMenu: React.FC = () => {
   return (
     <>
       <Box marginY={1}>
-        <Gradient name={`teen`}>
-          <Text>💣 minesweeper 💣</Text>
+        <Gradient name={`morning`}>
+          <Text>💣 MINESWEEPER 💣</Text>
         </Gradient>
       </Box>
       <SelectDifficulty onSelect={startGame} />
@@ -24,26 +24,33 @@ interface SelectDifficultyProps {
 }
 
 const items = difficulties.map((value) => ({ value, label: value.replace(/^\w/, (c) => c.toUpperCase()) }));
-const SelectDifficulty: React.FC<SelectDifficultyProps> = ({ onSelect }) => (
-  <>
-    <Text>Choose difficulty:</Text>
-    <SelectInput
-      items={items}
-      onSelect={(d) => onSelect(d.value)}
-      itemComponent={({ isSelected, label }) =>
-        isSelected ? (
-          <Gradient name={`vice`}>
+const colors = [`cristal`, `teen`, `morning`];
+const colorMapping = Object.fromEntries(items.map(({ label }, i) => [label, colors[i]]));
+const SelectDifficulty: React.FC<SelectDifficultyProps> = ({ onSelect }) => {
+  const [highlighted, setHighlighted] = useState(items[0].label);
+  return (
+    <>
+      <Text>Choose difficulty:</Text>
+      <SelectInput
+        items={items}
+        initialIndex={0}
+        onSelect={(item) => onSelect(item.value)}
+        onHighlight={(item) => setHighlighted(item.label)}
+        itemComponent={({ isSelected, label }) =>
+          isSelected ? (
+            <Gradient name={colorMapping[label]}>
+              <Text>{label}</Text>
+            </Gradient>
+          ) : (
             <Text>{label}</Text>
+          )
+        }
+        indicatorComponent={({ isSelected }) => (
+          <Gradient name={colorMapping[highlighted]}>
+            <Text>{isSelected ? `❯ ` : `  `}</Text>
           </Gradient>
-        ) : (
-          <Text>{label}</Text>
-        )
-      }
-      indicatorComponent={({ isSelected }) => (
-        <Gradient name={`vice`}>
-          <Text>{isSelected ? `❯ ` : `  `}</Text>
-        </Gradient>
-      )}
-    />
-  </>
-);
+        )}
+      />
+    </>
+  );
+};
