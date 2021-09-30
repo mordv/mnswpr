@@ -43,7 +43,7 @@ const getGameSettings = (difficulty: DifficultyType): [width: number, height: nu
     : difficulty === `intermediate`
     ? [16, 16, 40]
     : difficulty === `expert`
-    ? [30, 30, 99] // fixme doesn't work with non-square fields
+    ? [30, 16, 99]
     : undefined;
 
 const generateMinesPositions = (width: number, height: number, minesCount: number): [number, number][] => {

@@ -51,9 +51,9 @@ export const Field: React.FC = () => {
   return (
     <Box flexDirection={`column`}>
       <Text backgroundColor={theme.colors.background}>
-        {intRange(width).map((i) => (
+        {intRange(height).map((i) => (
           <Text key={i as Key}>
-            {intRange(height).map((j) => (
+            {intRange(width).map((j) => (
               <Cell key={j as Key} state={cells[i][j]} selected={i === x && j === y} />
             ))}
             <Newline />
