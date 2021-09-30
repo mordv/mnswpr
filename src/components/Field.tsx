@@ -33,9 +33,10 @@ export const Field: React.FC = () => {
     open,
     restartGame,
     gameStatus,
+    toStartScreen,
   } = useGameStore();
 
-  useInput((input, { ctrl, downArrow, leftArrow, rightArrow, upArrow }) =>
+  useInput((input, { escape, ctrl, downArrow, leftArrow, rightArrow, upArrow }) =>
     leftArrow
       ? goLeft()
       : rightArrow
@@ -50,6 +51,8 @@ export const Field: React.FC = () => {
       ? open()
       : input.toLowerCase() === `r` && ctrl
       ? restartGame()
+      : escape
+      ? toStartScreen()
       : undefined
   );
 

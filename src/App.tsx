@@ -6,5 +6,5 @@ import { MainMenu } from './components/MainMenu';
 
 export const App: FC<CliFlagsType> = () => {
   const gameStatus = useGameStore((s) => s.gameStatus);
-  return gameStatus === `settings` ? <MainMenu /> : <Field />;
+  return gameStatus === `startScreen` ? <MainMenu /> : <Field />;
 };

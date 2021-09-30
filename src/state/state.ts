@@ -12,7 +12,7 @@ export interface CellStateType {
   diedAt?: boolean;
 }
 
-export type GameStatusType = 'settings' | 'waitingForFirstHit' | 'game' | 'gameOver' | 'win';
+export type GameStatusType = 'startScreen' | 'waitingForFirstHit' | 'game' | 'gameOver' | 'win';
 
 export interface GameStoreType extends State {
   gameStatus: GameStatusType;
@@ -28,6 +28,7 @@ export interface GameStoreType extends State {
   goDown: () => void;
   flag: () => void;
   open: () => void;
+  toStartScreen: () => void;
   startGame: (difficulty: DifficultyType) => void;
   restartGame: () => void;
 }
@@ -38,7 +39,7 @@ export type DifficultyType = typeof difficulties[number];
 export const flagCountSelector = (state: GameStoreType): number => state.cells.flat().filter((f) => f.flagged).length;
 
 export const useGameStore = create<GameStoreType>((set, get) => ({
-  gameStatus: `settings`,
+  gameStatus: `startScreen`,
   width: 0,
   height: 0,
   minesCount: 0,
@@ -108,6 +109,7 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
       set({ cells: generateEmptyCells(width, height), gameStatus: `waitingForFirstHit`, startedAt: new Date() });
     }
   },
+  toStartScreen: () => set({ gameStatus: `startScreen` }),
 }));
 
 export const gameActive = (status: GameStatusType): boolean =>
