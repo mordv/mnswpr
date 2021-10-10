@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Text } from 'ink';
 import { theme } from '../styles/theme';
 import { intRange } from '../utils/utils';
-import { flagCountSelector, gameActive, GameStatusType, GameStoreType, useGameStore } from '../state/state';
+import { flagCountSelector, GameStatusType, GameStoreType, useGameStore } from '../state/state';
 
 const statusToSmile = (status: GameStatusType): string => {
   switch (status) {
@@ -16,27 +16,25 @@ const statusToSmile = (status: GameStatusType): string => {
   }
 };
 
-const selector = ({ minesCount, gameStatus, width, startedAt }: GameStoreType) => ({
+const selector = ({ minesCount, gameStatus, width, startedAt, endedAt }: GameStoreType) => ({
   minesCount,
   gameStatus,
   width,
   startedAt,
+  endedAt,
 });
 
 export const FieldHeader: React.FC = () => {
-  const [secondsSpent, setSecondsSpent] = useState(0);
+  const [secondsSpent, setSecondsSpent] = useState<number>();
 
   const flagsCount = useGameStore(flagCountSelector);
-  const { minesCount, width, gameStatus, startedAt } = useGameStore(selector);
+  const { minesCount, width, gameStatus, startedAt, endedAt } = useGameStore(selector);
 
-  useEffect(() => setSecondsSpent(0), [startedAt]);
-  useEffect(() => {
-    const interval = setInterval(
-      () => gameActive(gameStatus) && setSecondsSpent(Math.floor((new Date().getTime() - startedAt.getTime()) / 1000)),
-      1000
-    );
-    return () => clearInterval(interval);
-  }, [gameStatus, startedAt]);
+  useEffect(
+    () =>
+      setSecondsSpent(endedAt && startedAt ? Math.floor((endedAt.getTime() - startedAt.getTime()) / 1000) : undefined),
+    [endedAt, startedAt]
+  );
 
   const minesLeft = useMemo(() => (minesCount - flagsCount).toString(), [minesCount, flagsCount]);
 
@@ -50,7 +48,7 @@ export const FieldHeader: React.FC = () => {
 
   const fillRight = useMemo(
     () =>
-      intRange(width - 1 - secondsSpent.toString().length)
+      intRange(width - `😎`.length / 2 - (secondsSpent?.toString()?.length + `s`.length || 0))
         .map(() => ` `)
         .join(``),
     [width, secondsSpent]
@@ -62,7 +60,7 @@ export const FieldHeader: React.FC = () => {
       {fillLeft}
       {statusToSmile(gameStatus)}
       {fillRight}
-      <Text color={theme.colors.counter}>{secondsSpent}</Text>
+      {secondsSpent && <Text color={theme.colors.counter}>{secondsSpent}s</Text>}
     </Text>
   );
 };

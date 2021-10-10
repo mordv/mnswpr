@@ -17,6 +17,7 @@ export type GameStatusType = 'startScreen' | 'waitingForFirstHit' | 'game' | 'ga
 export interface GameStoreType extends State {
   gameStatus: GameStatusType;
   startedAt: Date;
+  endedAt?: Date;
   width: number;
   height: number;
   minesCount: number;
@@ -79,12 +80,14 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
           if (!cell.opened && !cell.flagged) {
             if (cell.mine) {
               cell.diedAt = true;
+              draft.endedAt = new Date();
               draft.gameStatus = `gameOver`;
             } else {
               openCellMutable(draft.cells, x, y, draft.width, draft.height);
               const closed = draft.cells.flat().filter((f) => !f.opened);
               if (closed.length === get().minesCount) {
                 closed.forEach((c) => (c.flagged = true));
+                draft.endedAt = new Date();
                 draft.gameStatus = `win`;
               }
             }
@@ -101,12 +104,18 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
       cells: generateEmptyCells(width, height),
       gameStatus: `waitingForFirstHit`,
       startedAt: new Date(),
+      endedAt: undefined,
     });
   },
   restartGame: () => {
     const { gameStatus, width, height } = get();
     if (([`game`, `gameOver`, `win`] as GameStatusType[]).includes(gameStatus)) {
-      set({ cells: generateEmptyCells(width, height), gameStatus: `waitingForFirstHit`, startedAt: new Date() });
+      set({
+        cells: generateEmptyCells(width, height),
+        gameStatus: `waitingForFirstHit`,
+        startedAt: new Date(),
+        endedAt: undefined,
+      });
     }
   },
   toStartScreen: () => set({ gameStatus: `startScreen` }),
