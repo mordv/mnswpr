@@ -44,6 +44,7 @@ const colors = [`cristal`, `teen`, `morning`];
 const colorMapping = Object.fromEntries(items.map(({ label }, i) => [label, colors[i]]));
 const SelectDifficulty: React.FC<SelectDifficultyProps> = ({ onSelect }) => {
   const [highlighted, setHighlighted] = useState(items[0].label);
+  const legacyMode = useGameStore((s) => s.drawingMode === `legacy`);
   return (
     <>
       <Text>Choose difficulty:</Text>
@@ -63,7 +64,7 @@ const SelectDifficulty: React.FC<SelectDifficultyProps> = ({ onSelect }) => {
         }
         indicatorComponent={({ isSelected }) => (
           <Gradient name={colorMapping[highlighted]}>
-            <Text>{isSelected ? `❯ ` : `  `}</Text>
+            <Text>{isSelected ? (legacyMode ? `> ` : `❯ `) : `  `}</Text>
           </Gradient>
         )}
       />
