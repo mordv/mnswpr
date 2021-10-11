@@ -10,19 +10,12 @@ const cli = meow(
 	  $ minesweeper
 
 	Options
-		--name  Your name
-
-	Examples
-	  $ minesweeper --name=Jane
-	  Hello, Jane
+		--legacy  Legacy mode. Use this if your terminal doesn't support emojis
 `,
   {
     flags: {
-      name: {
-        type: `string`,
-      },
-      color: {
-        type: `string`,
+      legacy: {
+        type: `boolean`,
       },
     },
   }

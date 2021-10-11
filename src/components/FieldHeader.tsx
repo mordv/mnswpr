@@ -2,23 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Text } from 'ink';
 import { theme } from '../styles/theme';
 import { intRange } from '../utils/utils';
-import { flagCountSelector, GameStatusType, GameStoreType, useGameStore } from '../state/state';
+import { flagCountSelector, GameStoreType, useGameStore } from '../state/state';
+import { useStatusSymbol } from '../hooks/useSymbol';
 
-const statusToSmile = (status: GameStatusType): string => {
-  switch (status) {
-    case `waitingForFirstHit`:
-    case `game`:
-      return `🙂`;
-    case `gameOver`:
-      return `💀`;
-    case `win`:
-      return `😎`;
-  }
-};
-
-const selector = ({ minesCount, gameStatus, width, startedAt, endedAt }: GameStoreType) => ({
+const selector = ({ minesCount, width, startedAt, endedAt }: GameStoreType) => ({
   minesCount,
-  gameStatus,
   width,
   startedAt,
   endedAt,
@@ -28,7 +16,7 @@ export const FieldHeader: React.FC = () => {
   const [secondsSpent, setSecondsSpent] = useState<number>();
 
   const flagsCount = useGameStore(flagCountSelector);
-  const { minesCount, width, gameStatus, startedAt, endedAt } = useGameStore(selector);
+  const { minesCount, width, startedAt, endedAt } = useGameStore(selector);
 
   useEffect(
     () =>
@@ -46,9 +34,11 @@ export const FieldHeader: React.FC = () => {
     [width, minesLeft.length]
   );
 
+  const statusSymbol = useStatusSymbol();
+
   const fillRight = useMemo(
     () =>
-      intRange(width - `😎`.length / 2 - (secondsSpent?.toString()?.length + `s`.length || 0))
+      intRange(width - 1 - (secondsSpent?.toString()?.length + `s`.length || 0))
         .map(() => ` `)
         .join(``),
     [width, secondsSpent]
@@ -58,7 +48,7 @@ export const FieldHeader: React.FC = () => {
     <Text backgroundColor={theme.colors.background}>
       <Text color={theme.colors.counter}>{minesLeft}</Text>
       {fillLeft}
-      {statusToSmile(gameStatus)}
+      {statusSymbol}
       {fillRight}
       {secondsSpent && <Text color={theme.colors.counter}>{secondsSpent}s</Text>}
     </Text>

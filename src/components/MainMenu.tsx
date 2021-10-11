@@ -1,20 +1,36 @@
 import React, { useState } from 'react';
 import Gradient from 'ink-gradient';
 import SelectInput from 'ink-select-input';
-import { Box, Text } from 'ink';
+import { Box, Text, useInput } from 'ink';
 import { difficulties, DifficultyType, useGameStore } from '../state/state';
+import { capitalize } from '../utils/utils';
+import { useSymbol } from '../hooks/useSymbol';
 
 export const MainMenu: React.FC = () => {
   const startGame = useGameStore((s) => s.startGame);
+  const switchDrawingMode = useGameStore((s) => s.switchDrawingMode);
+  const drawingMode = useGameStore((s) => s.drawingMode);
+
+  useInput((i) => i.toLowerCase() === `m` && switchDrawingMode());
+
+  const bomb = useSymbol(`bomb`);
+  const flag = useSymbol(`flag`);
 
   return (
     <>
       <Box marginY={1}>
         <Gradient name={`morning`}>
-          <Text>💣 MINESWEEPER 💣</Text>
+          <Text>
+            {bomb} MINESWEEPER {bomb}
+          </Text>
         </Gradient>
       </Box>
       <SelectDifficulty onSelect={startGame} />
+      <Box height={2} />
+      <Text>
+        [m] {flag}
+        {capitalize(drawingMode)} mode
+      </Text>
     </>
   );
 };
@@ -23,7 +39,7 @@ interface SelectDifficultyProps {
   onSelect: (difficulty: DifficultyType) => void;
 }
 
-const items = difficulties.map((value) => ({ value, label: value.replace(/^\w/, (c) => c.toUpperCase()) }));
+const items = difficulties.map((value) => ({ value, label: capitalize(value) }));
 const colors = [`cristal`, `teen`, `morning`];
 const colorMapping = Object.fromEntries(items.map(({ label }, i) => [label, colors[i]]));
 const SelectDifficulty: React.FC<SelectDifficultyProps> = ({ onSelect }) => {

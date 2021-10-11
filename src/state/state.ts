@@ -13,9 +13,11 @@ export interface CellStateType {
 }
 
 export type GameStatusType = 'startScreen' | 'waitingForFirstHit' | 'game' | 'gameOver' | 'win';
+export type DrawingModeType = 'emoji' | 'legacy';
 
 export interface GameStoreType extends State {
   gameStatus: GameStatusType;
+  drawingMode: DrawingModeType;
   startedAt: Date;
   endedAt?: Date;
   width: number;
@@ -32,6 +34,7 @@ export interface GameStoreType extends State {
   toStartScreen: () => void;
   startGame: (difficulty: DifficultyType) => void;
   restartGame: () => void;
+  switchDrawingMode: () => void;
 }
 
 export const difficulties = [`beginner`, `intermediate`, `expert`] as const;
@@ -41,6 +44,7 @@ export const flagCountSelector = (state: GameStoreType): number => state.cells.f
 
 export const useGameStore = create<GameStoreType>((set, get) => ({
   gameStatus: `startScreen`,
+  drawingMode: `emoji`,
   width: 0,
   height: 0,
   minesCount: 0,
@@ -119,6 +123,7 @@ export const useGameStore = create<GameStoreType>((set, get) => ({
     }
   },
   toStartScreen: () => set({ gameStatus: `startScreen` }),
+  switchDrawingMode: () => set((s) => ({ drawingMode: s.drawingMode === `emoji` ? `legacy` : `emoji` })),
 }));
 
 export const gameActive = (status: GameStatusType): boolean =>

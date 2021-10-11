@@ -9,3 +9,5 @@ export const randomInt = (min = 0, maxIncluded: number): number => {
   maxIncluded = Math.floor(maxIncluded);
   return Math.floor(Math.random() * (maxIncluded - min + 1)) + min;
 };
+
+export const capitalize = (string: string): string => string.replace(/^\w/, (c) => c.toUpperCase());

@@ -4,6 +4,7 @@ import { CellStateType, MinesAroundType, useGameStore } from '../state/state';
 import { intRange } from '../utils/utils';
 import { theme } from '../styles/theme';
 import { FieldHeader } from './FieldHeader';
+import { useSymbol } from '../hooks/useSymbol';
 
 // export const selector = ({ goDown, goUp, goLeft, goRight, width, height, position: [x, y] }: GameStoreType) => ({
 //   goDown,
@@ -86,21 +87,31 @@ interface CellProps {
 }
 
 // todo don't like than the number isn't centered.
-const Cell: React.FC<CellProps> = ({ state: { flagged, mine, opened, minesAround, diedAt }, selected, gameOver }) => (
-  <Text backgroundColor={gameOver && diedAt ? `#ff0000` : selected ? `#ffffff` : undefined}>
-    {minesAround > 0 && opened ? (
-      <Text color={mineNumberToColor(minesAround)} bold>
-        {` `}
-        {minesAround}
-      </Text>
-    ) : opened && !mine ? (
-      `  `
-    ) : (opened || gameOver) && mine ? (
-      `💣`
-    ) : flagged ? (
-      `🚩`
-    ) : (
-      `⬛`
-    )}
-  </Text>
-);
+const Cell: React.FC<CellProps> = ({ state: { flagged, mine, opened, minesAround, diedAt }, selected, gameOver }) => {
+  const cell = useSymbol(
+    opened && !mine ? `openedCell` : (opened || gameOver) && mine ? `bomb` : flagged ? `flag` : `closedCell`
+  );
+
+  return (
+    <Text
+      backgroundColor={
+        gameOver && diedAt
+          ? theme.colors.diedAtCell
+          : selected
+          ? theme.colors.selectedCell
+          : !opened
+          ? theme.colors.closedCell
+          : undefined
+      }
+    >
+      {minesAround > 0 && opened ? (
+        <Text color={mineNumberToColor(minesAround)} bold>
+          {` `}
+          {minesAround}
+        </Text>
+      ) : (
+        cell
+      )}
+    </Text>
+  );
+};
