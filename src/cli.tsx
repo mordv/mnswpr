@@ -5,17 +5,18 @@ import meow from 'meow';
 import { App } from './App';
 
 const cli = meow(
-  `
-	Usage
-	  $ minesweeper
+  `Usage: minesweeper
 
-	Options
-		--legacy  Legacy mode. Use this if your terminal doesn't support emojis
+Options:
+
+  --legacy, -L
+	    Legacy mode. Use this if your terminal doesn't support emojis
 `,
   {
     flags: {
       legacy: {
         type: `boolean`,
+        alias: `L`,
       },
     },
   }

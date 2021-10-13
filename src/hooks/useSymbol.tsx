@@ -24,7 +24,7 @@ const legacyMode: Record<SymbolType, JSX.Element> = {
   faceAlive: <Text color={theme.colors.smileColor}>:)</Text>,
   faceWin: <Text color={theme.colors.bombColor}>;)</Text>,
   faceDead: <Text color={theme.colors.flagColor}>;(</Text>,
-  star: <Text>★ </Text>,
+  star: <Text>✶</Text>,
 };
 
 export const useSymbol = (symbol: SymbolType): JSX.Element => {
