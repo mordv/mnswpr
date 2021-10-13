@@ -2473,6 +2473,14 @@ ink-gradient@^2.0.0:
     prop-types "^15.7.2"
     strip-ansi "^6.0.0"
 
+ink-link@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ink-link/-/ink-link-2.0.0.tgz#3e52135010398a4406f0e879baf8c118ddbb537f"
+  integrity sha512-1Ic1uU1df+2ThYUE6n04RXNs7eqQOSmxBlSbOKHIM3biLAkvyaAxzXAI4tOjWZBrS6mP1wZBEGxAH5LozQbeJg==
+  dependencies:
+    prop-types "^15.7.2"
+    terminal-link "^2.1.1"
+
 ink-select-input@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/ink-select-input/-/ink-select-input-4.2.0.tgz#a03dc1cae81f09c29cdd4612ae0be610c65c269f"
@@ -4612,6 +4620,14 @@ temp-dir@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/temp-dir/-/temp-dir-2.0.0.tgz#bde92b05bdfeb1516e804c9c00ad45177f31321e"
   integrity sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==
+
+terminal-link@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/terminal-link/-/terminal-link-2.1.1.tgz#14a64a27ab3c0df933ea546fba55f2d078edc994"
+  integrity sha512-un0FmiRUQNr5PJqy9kP7c40F5BOfpGlYTrxonDChEZB7pzZxRNp/bt+ymiy9/npwXya9KH99nJ/GXFIiUkYGFQ==
+  dependencies:
+    ansi-escapes "^4.2.1"
+    supports-hyperlinks "^2.0.0"
 
 text-table@^0.2.0:
   version "0.2.0"

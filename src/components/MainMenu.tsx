@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import Gradient from 'ink-gradient';
 import SelectInput from 'ink-select-input';
-import { Box, Text, useInput } from 'ink';
+import { Box, Text, useApp, useInput } from 'ink';
 import { difficulties, DifficultyType, useGameStore } from '../state/state';
 import { capitalize } from '../utils/utils';
 import { useSymbol } from '../hooks/useSymbol';
+import Link from 'ink-link';
+import { ControlsHints } from './Field';
 
 export const MainMenu: React.FC = () => {
+  const { exit } = useApp();
+  useInput((_, { escape }) => escape && exit());
+
   const startGame = useGameStore((s) => s.startGame);
-  const switchDrawingMode = useGameStore((s) => s.switchDrawingMode);
-  const drawingMode = useGameStore((s) => s.drawingMode);
-
-  useInput((i) => i.toLowerCase() === `m` && switchDrawingMode());
-
   const bomb = useSymbol(`bomb`);
-  const flag = useSymbol(`flag`);
+  const faceWin = useSymbol(`faceWin`);
+  const star = useSymbol(`star`);
 
   return (
     <>
-      <Box marginY={1}>
+      <Box marginBottom={1}>
         <Gradient name={`morning`}>
           <Text>
             {bomb} MINESWEEPER {bomb}
@@ -26,11 +27,15 @@ export const MainMenu: React.FC = () => {
         </Gradient>
       </Box>
       <SelectDifficulty onSelect={startGame} />
-      <Box height={2} />
-      <Text>
-        [m] {flag}
-        {capitalize(drawingMode)} mode
-      </Text>
+      <Box height={1} />
+      <Link url={`https://github.com/mordv`}>
+        <Gradient name={`morning`}>
+          <Text>
+            {star}Star project on GitHub{faceWin}
+          </Text>
+        </Gradient>
+      </Link>
+      <ControlsHints />
     </>
   );
 };

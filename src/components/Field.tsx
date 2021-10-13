@@ -37,7 +37,7 @@ export const Field: React.FC = () => {
     toStartScreen,
   } = useGameStore();
 
-  useInput((input, { escape, ctrl, downArrow, leftArrow, rightArrow, upArrow }) =>
+  useInput((input, { escape, ctrl, return: enter, downArrow, leftArrow, rightArrow, upArrow }) =>
     leftArrow
       ? goLeft()
       : rightArrow
@@ -48,7 +48,7 @@ export const Field: React.FC = () => {
       ? goDown()
       : input.toLowerCase() === `f`
       ? flag()
-      : input.toLowerCase() === ` `
+      : input.toLowerCase() === ` ` || enter
       ? open()
       : input.toLowerCase() === `r` && ctrl
       ? restartGame()
@@ -58,25 +58,28 @@ export const Field: React.FC = () => {
   );
 
   return (
-    <Box flexDirection={`column`}>
-      <FieldHeader />
-      <Box />
-      <Text backgroundColor={theme.colors.background}>
-        {intRange(height).map((i) => (
-          <Text key={i as Key}>
-            {intRange(width).map((j) => (
-              <Cell
-                key={j as Key}
-                gameOver={gameStatus === `gameOver`}
-                state={cells[i][j]}
-                selected={i === x && j === y}
-              />
-            ))}
-            <Newline />
-          </Text>
-        ))}
-      </Text>
-    </Box>
+    <>
+      <>
+        <FieldHeader />
+        <Box />
+        <Text backgroundColor={theme.colors.background}>
+          {intRange(height).map((i) => (
+            <Text key={i as Key}>
+              {intRange(width).map((j) => (
+                <Cell
+                  key={j as Key}
+                  gameOver={gameStatus === `gameOver`}
+                  state={cells[i][j]}
+                  selected={i === x && j === y}
+                />
+              ))}
+              <Newline />
+            </Text>
+          ))}
+        </Text>
+      </>
+      <ControlsHints />
+    </>
   );
 };
 
@@ -114,4 +117,43 @@ const Cell: React.FC<CellProps> = ({ state: { flagged, mine, opened, minesAround
       )}
     </Text>
   );
+};
+
+export const ControlsHints: React.FC = () => {
+  const drawingMode = useGameStore((s) => s.drawingMode);
+  const switchDrawingMode = useGameStore((s) => s.switchDrawingMode);
+  const showHelp = useGameStore((s) => s.showHelp);
+  const helpWasShown = useGameStore((s) => s.helpWasShown);
+  const toggleHints = useGameStore((s) => s.toggleHelp);
+  const gameStatus = useGameStore((s) => s.gameStatus);
+
+  useInput((i) =>
+    i.toLowerCase() === `l` ? switchDrawingMode() : i.toLowerCase() === `h` ? toggleHints() : undefined
+  );
+
+  const flag = useSymbol(`flag`);
+  const bomb = useSymbol(`bomb`);
+
+  return showHelp || !helpWasShown ? (
+    <Box flexDirection={`column`} borderStyle={`round`} width={26}>
+      <Text>[h] {showHelp ? `Hide help` : `Show help`}</Text>
+      {showHelp && (
+        <Text>
+          [l] {drawingMode === `emoji` ? `Emoji ` : `Legacy`}
+          {flag}
+          {bomb}
+          <Newline />
+          [arrows] Move
+          <Newline />
+          [f] Flag
+          <Newline />
+          [space|enter] Open cell
+          <Newline />
+          [ctrl+r] Restart
+          <Newline />
+          [escape] {gameStatus === `startScreen` ? `Exit` : `Menu`}
+        </Text>
+      )}
+    </Box>
+  ) : null;
 };
