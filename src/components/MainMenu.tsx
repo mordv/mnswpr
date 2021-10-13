@@ -6,7 +6,7 @@ import { difficulties, DifficultyType, useGameStore } from '../state/state';
 import { capitalize } from '../utils/utils';
 import { useSymbol } from '../hooks/useSymbol';
 import Link from 'ink-link';
-import { ControlsHints } from './Field';
+import { ControlsHints } from './ControlsHints';
 
 export const MainMenu: React.FC = () => {
   const { exit } = useApp();
