@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Gradient from 'ink-gradient';
 import SelectInput from 'ink-select-input';
 import { Box, Text, useApp, useInput } from 'ink';
@@ -13,9 +13,15 @@ export const MainMenu: React.FC = () => {
   useInput((_, { escape }) => escape && exit());
 
   const startGame = useGameStore((s) => s.startGame);
+  const setupCustomField = useGameStore((s) => s.setupCustomField);
   const bomb = useSymbol(`bomb`);
   const faceWin = useSymbol(`faceWin`);
   const star = useSymbol(`star`);
+
+  const handleSelect = useCallback(
+    (diff: DifficultyType) => (diff === `custom` ? setupCustomField() : startGame(diff)),
+    [setupCustomField, startGame]
+  );
 
   return (
     <>
@@ -26,7 +32,7 @@ export const MainMenu: React.FC = () => {
           </Text>
         </Gradient>
       </Box>
-      <SelectDifficulty onSelect={startGame} />
+      <SelectDifficulty onSelect={handleSelect} />
       <Box height={1} />
       <Link url={`https://github.com/mordv`}>
         <Gradient name={`morning`}>
@@ -45,7 +51,7 @@ interface SelectDifficultyProps {
 }
 
 const items = difficulties.map((value) => ({ value, label: capitalize(value) }));
-const colors = [`cristal`, `teen`, `morning`];
+const colors = [`cristal`, `teen`, `morning`, `instagram`];
 const colorMapping = Object.fromEntries(items.map(({ label }, i) => [label, colors[i]]));
 const SelectDifficulty: React.FC<SelectDifficultyProps> = ({ onSelect }) => {
   const [highlighted, setHighlighted] = useState(items[0].label);

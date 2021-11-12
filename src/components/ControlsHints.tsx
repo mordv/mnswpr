@@ -23,7 +23,7 @@ export const ControlsHints: React.FC = () => {
       <Text>[h] {showHelp ? `Hide help` : `Show help`}</Text>
       {showHelp && (
         <Text>
-          [l] {drawingMode === `emoji` ? `Emoji ` : `Legacy`}
+          [l] {drawingMode === `emoji` ? `Emoji mode ` : `Legacy mode`}
           {flag}
           {bomb}
           <Newline />

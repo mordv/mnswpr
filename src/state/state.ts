@@ -12,7 +12,7 @@ export interface CellStateType {
   diedAt?: boolean;
 }
 
-export type GameStatusType = 'startScreen' | 'waitingForFirstHit' | 'game' | 'gameOver' | 'win';
+export type GameStatusType = 'startScreen' | 'customFieldSetup' | 'waitingForFirstHit' | 'game' | 'gameOver' | 'win';
 export type DrawingModeType = 'emoji' | 'legacy';
 
 export interface GameStoreType extends State {
@@ -39,101 +39,115 @@ export interface GameStoreType extends State {
   flag: () => void;
   open: () => void;
   toStartScreen: () => void;
-  startGame: (difficulty: DifficultyType) => void;
+  startGame: (difficulty: DifficultyType, config?: CustomConfigType) => void;
+  setupCustomField: () => void;
   restartGame: () => void;
 }
 
-export const difficulties = [`beginner`, `intermediate`, `expert`] as const;
+export const difficulties = [`beginner`, `intermediate`, `expert`, `custom`] as const;
 export type DifficultyType = typeof difficulties[number];
+export interface CustomConfigType {
+  width: number;
+  height: number;
+  mines: number;
+}
 
 export const flagCountSelector = (state: GameStoreType): number => state.cells.flat().filter((f) => f.flagged).length;
 
-export const useGameStore = create<GameStoreType>((set, get) => ({
-  gameStatus: `startScreen`,
-  drawingMode: `emoji`,
-  showHelp: false,
-  helpWasShown: false,
-  toggleHelp: () => set((s) => ({ showHelp: !s.showHelp, helpWasShown: true })),
-  width: 0,
-  height: 0,
-  minesCount: 0,
-  position: [0, 0],
-  cells: [],
-  startedAt: new Date(),
-  goLeft: () =>
-    gameActive(get().gameStatus) && set(({ width, position: [x, y] }) => ({ position: [x, subInRing(y, width)] })), // todo jump over opened cells?
-  goRight: () =>
-    gameActive(get().gameStatus) && set(({ width, position: [x, y] }) => ({ position: [x, addInRing(y, width)] })),
-  goUp: () =>
-    gameActive(get().gameStatus) && set(({ height, position: [x, y] }) => ({ position: [subInRing(x, height), y] })),
-  goDown: () =>
-    gameActive(get().gameStatus) && set(({ height, position: [x, y] }) => ({ position: [addInRing(x, height), y] })),
-  flag: () =>
-    gameActive(get().gameStatus) &&
-    set(
-      produce<GameStoreType>((draft) => {
-        const [x, y] = draft.position;
-        const cell = draft.cells[x][y];
-        if (!cell.opened) {
-          cell.flagged = !cell.flagged;
-        }
-      })
-    ),
-  open: () =>
-    gameActive(get().gameStatus) &&
-    set(
-      produce<GameStoreType>((draft) => {
-        const [x, y] = draft.position;
-        if (draft.gameStatus === `waitingForFirstHit`) {
-          draft.cells = generateGameField(draft.width, draft.height, draft.minesCount, draft.position);
-          draft.gameStatus = `game`;
-          openCellMutable(draft.cells, x, y, draft.width, draft.height);
-        } else {
+export const useGameStore = create<GameStoreType>((set, get) => {
+  const winIfNeededMutable = (draft: GameStoreType) => {
+    const closed = draft.cells.flat().filter((f) => !f.opened);
+    if (closed.length === get().minesCount) {
+      closed.forEach((c) => (c.flagged = true));
+      draft.endedAt = new Date();
+      draft.gameStatus = `win`;
+    }
+  };
+
+  return {
+    gameStatus: `startScreen`,
+    drawingMode: `emoji`,
+    showHelp: false,
+    helpWasShown: false,
+    toggleHelp: () => set((s) => ({ showHelp: !s.showHelp, helpWasShown: true })),
+    width: 0,
+    height: 0,
+    minesCount: 0,
+    position: [0, 0],
+    cells: [],
+    startedAt: new Date(),
+    goLeft: () =>
+      gameActive(get().gameStatus) && set(({ width, position: [x, y] }) => ({ position: [x, subInRing(y, width)] })), // todo jump over opened cells?
+    goRight: () =>
+      gameActive(get().gameStatus) && set(({ width, position: [x, y] }) => ({ position: [x, addInRing(y, width)] })),
+    goUp: () =>
+      gameActive(get().gameStatus) && set(({ height, position: [x, y] }) => ({ position: [subInRing(x, height), y] })),
+    goDown: () =>
+      gameActive(get().gameStatus) && set(({ height, position: [x, y] }) => ({ position: [addInRing(x, height), y] })),
+    flag: () =>
+      gameActive(get().gameStatus) &&
+      set(
+        produce<GameStoreType>((draft) => {
+          const [x, y] = draft.position;
           const cell = draft.cells[x][y];
-          if (!cell.opened && !cell.flagged) {
-            if (cell.mine) {
-              cell.diedAt = true;
-              draft.endedAt = new Date();
-              draft.gameStatus = `gameOver`;
-            } else {
-              openCellMutable(draft.cells, x, y, draft.width, draft.height);
-              const closed = draft.cells.flat().filter((f) => !f.opened);
-              if (closed.length === get().minesCount) {
-                closed.forEach((c) => (c.flagged = true));
+          if (!cell.opened) {
+            cell.flagged = !cell.flagged;
+          }
+          winIfNeededMutable(draft);
+        })
+      ),
+    open: () =>
+      gameActive(get().gameStatus) &&
+      set(
+        produce<GameStoreType>((draft) => {
+          const [x, y] = draft.position;
+          if (draft.gameStatus === `waitingForFirstHit`) {
+            draft.cells = generateGameField(draft.width, draft.height, draft.minesCount, draft.position);
+            draft.gameStatus = `game`;
+            openCellMutable(draft.cells, x, y, draft.width, draft.height);
+          } else {
+            const cell = draft.cells[x][y];
+            if (!cell.opened && !cell.flagged) {
+              if (cell.mine) {
+                cell.diedAt = true;
                 draft.endedAt = new Date();
-                draft.gameStatus = `win`;
+                draft.gameStatus = `gameOver`;
+              } else {
+                openCellMutable(draft.cells, x, y, draft.width, draft.height);
+                winIfNeededMutable(draft);
               }
             }
           }
-        }
-      })
-    ),
-  startGame: (d) => {
-    const [width, height, minesCount] = getGameSettings(d);
-    set({
-      width,
-      height,
-      minesCount,
-      cells: generateEmptyCells(width, height),
-      gameStatus: `waitingForFirstHit`,
-      startedAt: new Date(),
-      endedAt: undefined,
-    });
-  },
-  restartGame: () => {
-    const { gameStatus, width, height } = get();
-    if (([`game`, `gameOver`, `win`] as GameStatusType[]).includes(gameStatus)) {
+        })
+      ),
+    setupCustomField: () => set({ gameStatus: `customFieldSetup` }),
+    startGame: (d, config) => {
+      const [width, height, minesCount] = getGameSettings(d, config);
       set({
+        width,
+        height,
+        minesCount,
         cells: generateEmptyCells(width, height),
         gameStatus: `waitingForFirstHit`,
         startedAt: new Date(),
         endedAt: undefined,
       });
-    }
-  },
-  toStartScreen: () => set({ gameStatus: `startScreen` }),
-  switchDrawingMode: () => set((s) => ({ drawingMode: s.drawingMode === `emoji` ? `legacy` : `emoji` })),
-}));
+    },
+    restartGame: () => {
+      const { gameStatus, width, height } = get();
+      if (([`game`, `gameOver`, `win`] as GameStatusType[]).includes(gameStatus)) {
+        set({
+          cells: generateEmptyCells(width, height),
+          gameStatus: `waitingForFirstHit`,
+          startedAt: new Date(),
+          endedAt: undefined,
+        });
+      }
+    },
+    toStartScreen: () => set({ gameStatus: `startScreen` }),
+    switchDrawingMode: () => set((s) => ({ drawingMode: s.drawingMode === `emoji` ? `legacy` : `emoji` })),
+  };
+});
 
 export const gameActive = (status: GameStatusType): boolean =>
   ([`game`, `waitingForFirstHit`] as GameStatusType[]).includes(status);
@@ -141,16 +155,20 @@ export const gameActive = (status: GameStatusType): boolean =>
 // Beginner: 8*8 10 mines
 // Intermediate: 16*16 40 mines
 // Expert: 16*30 99 mines
-// The first click in any game will never be a mine.
-
-const getGameSettings = (difficulty: DifficultyType): [width: number, height: number, minesCount: number] =>
+// The first click in any game will never be a mine so as it's 8 neighbour cells
+const getGameSettings = (
+  difficulty: DifficultyType,
+  config?: CustomConfigType
+): [width: number, height: number, minesCount: number] =>
   difficulty === `beginner`
     ? [8, 8, 10]
     : difficulty === `intermediate`
     ? [16, 16, 40]
     : difficulty === `expert`
     ? [30, 16, 99]
-    : undefined;
+    : difficulty === `custom` && config
+    ? [config.width, config.height, config.mines]
+    : [8, 8, 10];
 
 const generateMinesPositions = (
   width: number,
