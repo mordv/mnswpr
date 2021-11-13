@@ -127,6 +127,7 @@ export const useGameStore = create<GameStoreType>((set, get) => {
         width,
         height,
         minesCount,
+        position: [0, 0],
         cells: generateEmptyCells(width, height),
         gameStatus: `waitingForFirstHit`,
         startedAt: new Date(),

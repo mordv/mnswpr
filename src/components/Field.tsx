@@ -60,25 +60,23 @@ export const Field: React.FC = () => {
 
   return (
     <>
-      <>
-        <FieldHeader />
-        <Box />
-        <Text backgroundColor={theme.colors.background}>
-          {intRange(height).map((i) => (
-            <Text key={i as Key}>
-              {intRange(width).map((j) => (
-                <Cell
-                  key={j as Key}
-                  gameOver={gameStatus === `gameOver`}
-                  state={cells[i][j]}
-                  selected={i === x && j === y}
-                />
-              ))}
-              <Newline />
-            </Text>
-          ))}
-        </Text>
-      </>
+      <FieldHeader />
+      <Box />
+      <Text backgroundColor={theme.colors.background}>
+        {intRange(height).map((i) => (
+          <Text key={i as Key}>
+            {intRange(width).map((j) => (
+              <Cell
+                key={j as Key}
+                gameOver={gameStatus === `gameOver`}
+                state={cells[i][j]}
+                selected={i === x && j === y}
+              />
+            ))}
+            <Newline />
+          </Text>
+        ))}
+      </Text>
       <ControlsHints />
     </>
   );
@@ -90,7 +88,6 @@ interface CellProps {
   selected?: boolean;
 }
 
-// todo don't like than the number isn't centered.
 const Cell: React.FC<CellProps> = ({ state: { flagged, mine, opened, minesAround, diedAt }, selected, gameOver }) => {
   const cell = useSymbol(
     opened && !mine ? `openedCell` : (opened || gameOver) && mine ? `bomb` : flagged ? `flag` : `closedCell`
