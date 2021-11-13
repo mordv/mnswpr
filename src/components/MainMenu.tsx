@@ -34,7 +34,7 @@ export const MainMenu: React.FC = () => {
       </Box>
       <SelectDifficulty onSelect={handleSelect} />
       <Box height={1} />
-      <Link url={`https://github.com/mordv`}>
+      <Link url={`https://github.com/mordv/mnswrp`}>
         <Gradient name={`morning`}>
           <Text>
             {star}Star project on GitHub{faceWin}
@@ -57,28 +57,25 @@ const SelectDifficulty: React.FC<SelectDifficultyProps> = ({ onSelect }) => {
   const [highlighted, setHighlighted] = useState(items[0].label);
   const legacyMode = useGameStore((s) => s.drawingMode === `legacy`);
   return (
-    <>
-      <Text>Choose difficulty:</Text>
-      <SelectInput
-        items={items}
-        initialIndex={0}
-        onSelect={(item) => onSelect(item.value)}
-        onHighlight={(item) => setHighlighted(item.label)}
-        itemComponent={({ isSelected, label }) =>
-          isSelected ? (
-            <Gradient name={colorMapping[label]}>
-              <Text>{label}</Text>
-            </Gradient>
-          ) : (
+    <SelectInput
+      items={items}
+      initialIndex={0}
+      onSelect={(item) => onSelect(item.value)}
+      onHighlight={(item) => setHighlighted(item.label)}
+      itemComponent={({ isSelected, label }) =>
+        isSelected ? (
+          <Gradient name={colorMapping[label]}>
             <Text>{label}</Text>
-          )
-        }
-        indicatorComponent={({ isSelected }) => (
-          <Gradient name={colorMapping[highlighted]}>
-            <Text>{isSelected ? (legacyMode ? `> ` : `❯ `) : `  `}</Text>
           </Gradient>
-        )}
-      />
-    </>
+        ) : (
+          <Text>{label}</Text>
+        )
+      }
+      indicatorComponent={({ isSelected }) => (
+        <Gradient name={colorMapping[highlighted]}>
+          <Text>{isSelected ? (legacyMode ? `> ` : `❯ `) : `  `}</Text>
+        </Gradient>
+      )}
+    />
   );
 };

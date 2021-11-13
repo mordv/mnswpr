@@ -4,11 +4,11 @@ import { CustomConfigType, useGameStore } from '../state/state';
 import TextInput from 'ink-text-input';
 
 const minWidth = 5;
-const maxWidth = 40;
+const maxWidth = 50;
 const minHeight = 5;
-const maxHeight = 20;
+const maxHeight = 25;
 const minMines = 1;
-const getMaxMines = (width: number, height: number) => Math.floor(width * height * 0.7);
+const getMaxMines = (width: number, height: number) => Math.floor(width * height * 0.6);
 
 export const CustomFieldMenu: React.FC = () => {
   const [config, setConfig] = useState<Partial<CustomConfigType>>({});
