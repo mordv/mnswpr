@@ -1,15 +1,15 @@
 <p align="center">
     <a href=""><img src="https://user-images.githubusercontent.com/32086218/141683925-a29b5730-c52a-4479-9e0f-24377f90649d.png" /></a>
-    <div align="center"><strong>A Minesweeper game for your CLI</strong></div>
+    <div align="center"><strong>🚩A Minesweeper game for your terminal</strong></div>
 </p>
 
 ## Run
 ```bash
-npx mnswrp
+npx mnswpr
 ```
 ## Install globally
 ```bash
-npm install -g mnswrp
+npm install -g mnswpr
 mnswrp
 ```
 
