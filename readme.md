@@ -22,7 +22,7 @@ The interface works with emoji by default. If your terminal doesn't support it, 
 ## Options
 
 ```
-Usage: minesweeper
+Usage: mnswpr
 
 Options:
 
