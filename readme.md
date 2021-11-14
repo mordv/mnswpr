@@ -13,7 +13,7 @@ npx mnswpr
 ## Install globally
 ```bash
 npm install -g mnswpr
-mnswrp
+mnswpr
 ```
 
 ## Supported terminals
