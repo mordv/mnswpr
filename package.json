@@ -1,6 +1,13 @@
 {
-  "name": "minesweeper",
-  "version": "0.0.0",
+  "name": "mnswpr",
+  "version": "0.1.0",
+  "keywords": [
+    "react",
+    "terminal",
+    "cli",
+    "game",
+    "fun"
+  ],
   "license": "MIT",
   "bin": "dist/cli.js",
   "engines": {
