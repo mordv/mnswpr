@@ -13,14 +13,14 @@ const selector = ({ minesCount, width, startedAt, endedAt }: GameStoreType) => (
 });
 
 export const FieldHeader: React.FC = () => {
-  const [secondsSpent, setSecondsSpent] = useState<number>();
+  const [secondsSpent, setSecondsSpent] = useState<string>();
 
   const flagsCount = useGameStore(flagCountSelector);
   const { minesCount, width, startedAt, endedAt } = useGameStore(selector);
 
   useEffect(
     () =>
-      setSecondsSpent(endedAt && startedAt ? Math.floor((endedAt.getTime() - startedAt.getTime()) / 1000) : undefined),
+      setSecondsSpent(endedAt && startedAt ? ((endedAt.getTime() - startedAt.getTime()) / 1000).toFixed(1) : undefined),
     [endedAt, startedAt]
   );
 
@@ -38,7 +38,7 @@ export const FieldHeader: React.FC = () => {
 
   const fillRight = useMemo(
     () =>
-      intRange(width - 1 - (secondsSpent?.toString()?.length + `s`.length || 0))
+      intRange(width - 1 - (secondsSpent?.length + `s`.length || 0))
         .map(() => ` `)
         .join(``),
     [width, secondsSpent]
