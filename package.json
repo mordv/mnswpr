@@ -1,6 +1,7 @@
 {
   "name": "mnswpr",
-  "version": "0.1.0",
+  "description": "A Minesweeper game for your terminal",
+  "version": "0.1.2",
   "keywords": [
     "react",
     "terminal",
@@ -9,20 +10,32 @@
     "fun"
   ],
   "license": "MIT",
+  "author": "Alexander Mordvinov",
+  "homepage": "https://github.com/mordv/mnswpr",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mordv/mnswpr"
+  },
+  "bugs": {
+    "url": "https://github.com/mordv/mnswpr/issues"
+  },
   "bin": "dist/cli.js",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && dist/cli.js",
+    "dev": "npm run build && dist/cli.js",
+    "prepublish": "npm run build",
     "pretest": "npm run build",
     "test": "xo && ava",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
   },
   "files": [
-    "dist/cli.js"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
   "dependencies": {
     "immer": "^9.0.6",
