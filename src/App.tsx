@@ -13,7 +13,7 @@ export const App: FC<CliFlagsType> = ({ legacy }) => {
   }, [legacy, switchDrawingMode]);
   const gameStatus = useGameStore((s) => s.gameStatus);
   return (
-    <Box marginLeft={2} marginTop={2} flexDirection={`column`}>
+    <Box marginLeft={2} marginTop={1} flexDirection={`column`}>
       {gameStatus === `startScreen` ? (
         <MainMenu />
       ) : gameStatus === `customFieldSetup` ? (
