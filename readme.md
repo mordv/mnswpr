@@ -1,6 +1,10 @@
 <p align="center">
-    <a href=""><img src="https://user-images.githubusercontent.com/32086218/141683925-a29b5730-c52a-4479-9e0f-24377f90649d.png" /></a>
-    <div align="center"><strong>🚩 A Minesweeper game for your terminal written with <a href="https://github.com/facebook/react">ReactJS</a> & <a href="https://github.com/vadimdemedes/ink">ink</a> 😎</strong></div>
+    <img src="https://user-images.githubusercontent.com/32086218/141683925-a29b5730-c52a-4479-9e0f-24377f90649d.png" />
+    <img style="width: 70%; border-raduis: 50px;" src="https://user-images.githubusercontent.com/32086218/141686749-68f20064-5148-44b4-83b8-647184f2b578.gif" />
+    <div align="center">
+	    <strong>🚩 A Minesweeper game for your terminal written with <a href="https://github.com/facebook/react">ReactJS</a> & <a href="https://github.com/vadimdemedes/ink">ink</a> 😎
+	    </strong>
+    </div>
 </p>
 
 ## Run
