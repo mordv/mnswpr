@@ -13,17 +13,14 @@ export const App: FC<CliFlagsType> = ({ legacy }) => {
   }, [legacy, switchDrawingMode]);
   const gameStatus = useGameStore((s) => s.gameStatus);
   return (
-    <Box>
-      <Box width={2} />
-      <Box flexDirection={`column`}>
-        {gameStatus === `startScreen` ? (
-          <MainMenu />
-        ) : gameStatus === `customFieldSetup` ? (
-          <CustomFieldMenu />
-        ) : (
-          <Field />
-        )}
-      </Box>
+    <Box marginLeft={2} marginTop={2} flexDirection={`column`}>
+      {gameStatus === `startScreen` ? (
+        <MainMenu />
+      ) : gameStatus === `customFieldSetup` ? (
+        <CustomFieldMenu />
+      ) : (
+        <Field />
+      )}
     </Box>
   );
 };
