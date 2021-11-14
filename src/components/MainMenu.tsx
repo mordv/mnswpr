@@ -34,7 +34,7 @@ export const MainMenu: React.FC = () => {
       </Box>
       <SelectDifficulty onSelect={handleSelect} />
       <Box height={1} />
-      <Link url={`https://github.com/mordv/mnswrp`}>
+      <Link url={`https://github.com/mordv/mnswpr`}>
         <Gradient name={`morning`}>
           <Text>
             {star}Star project on GitHub{faceWin}
