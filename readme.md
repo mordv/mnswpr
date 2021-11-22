@@ -19,7 +19,7 @@ mnswpr
 ## Supported terminals
 ![legacy mode](https://user-images.githubusercontent.com/32086218/141684622-dcf166b5-1d66-4f03-a895-8f14edec6132.gif)
 
-The interface works with emoji by default. If your terminal doesn't support it, you can either switch to legacy mode by pressing `l` button or update your terminal (For Windows I suggest  [Windows Terminal](https://github.com/microsoft/terminal))![ava2 copy](https://user-images.githubusercontent.com/32086218/142848757-cc20d9e3-c315-4cde-81b8-182015afe752.png)
+The interface works with emoji by default. If your terminal doesn't support it, you can either switch to legacy mode by pressing `l` button or update your terminal (For Windows I suggest  [Windows Terminal](https://github.com/microsoft/terminal))
 
 
 
