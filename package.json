@@ -28,7 +28,7 @@
     "dev": "npm run build && dist/cli.js",
     "prepublish": "npm run build",
     "pretest": "npm run build",
-    "test": "xo && ava",
+    "test": "ava",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
   },
@@ -68,7 +68,7 @@
     "lint-staged": "^11.1.2",
     "prettier": "^2.4.1",
     "typescript": "^4.4.3",
-    "xo": "^0.39.1"
+    "@types/node": "^16.11.10"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
