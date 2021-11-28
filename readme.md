@@ -31,6 +31,15 @@ Usage: mnswpr
 Options:
 
   --legacy, -L
-	    Legacy mode. Use this if your terminal doesn't support emojis
+        Legacy mode. Use this if your terminal doesn't support emojis
+	      
+  --center, -C
+        Align the field to the center of the terminal
+        
+  --quick [b|i|e|width,height,mines], -Q [b|i|e|width,height,mines] 
+        Start game directly with one of the difficulties: [b|i|e] or a custom field: ${customFieldFormat}
+        Examples:
+          mnswpr --quick b #start game with beginner difficulty
+          mnswpr -Q 10,20,60 #start game with custom field width:10 height:20 mines:60
 ```
 
