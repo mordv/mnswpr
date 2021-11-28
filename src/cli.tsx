@@ -4,7 +4,7 @@ import { render } from 'ink';
 import meow from 'meow';
 import { App } from './App';
 import { maxHeight, maxWidth, minHeight, minMines, minWidth, validateFieldSize } from './components/CustomFieldMenu';
-import { CustomConfigType, DifficultyType } from './state/state';
+import { useGameStore } from './state/state';
 
 export const customFieldFormat = `[width(${minWidth}-${maxWidth}),height(${minHeight}-${maxHeight}),mines(${minMines}-width*height*0.6)]`;
 const { flags } = meow(
@@ -45,7 +45,8 @@ Options:
 
 export type CliFlagsType = Partial<typeof flags>;
 
-let quickGame: DifficultyType | CustomConfigType = undefined;
+flags.legacy && useGameStore.getState().switchDrawingMode();
+
 const number = `[1-9][0-9]?`;
 if (flags.quick) {
   const match = flags.quick.match(`^(?<width>${number}),(?<height>${number}),(?<mines>${number})$|^(?<diff>[b|i|e])$`);
@@ -55,16 +56,16 @@ if (flags.quick) {
   } else {
     const { width, height, mines, diff } = match.groups;
     if (diff) {
-      quickGame = diff === `b` ? `beginner` : diff === `i` ? `intermediate` : `expert`;
+      useGameStore.getState().startGame(diff === `b` ? `beginner` : diff === `i` ? `intermediate` : `expert`);
     } else {
       const validated = validateFieldSize(Number.parseInt(width), Number.parseInt(height), Number.parseInt(mines));
       if (!validated) {
         console.error(`--quick custom field must be within limitations: ${customFieldFormat}, see --help for details.`);
         process.exit(2);
       }
-      quickGame = validated;
+      useGameStore.getState().startGame(`custom`, validated);
     }
   }
 }
 
-render(<App center={flags.center} legacy={flags.legacy} quickGame={quickGame} />);
+render(<App center={flags.center} />);
