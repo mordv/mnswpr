@@ -3,12 +3,12 @@ import { Box, Text, useInput } from 'ink';
 import { CustomConfigType, useGameStore } from '../state/state';
 import TextInput from 'ink-text-input';
 
-const minWidth = 5;
-const maxWidth = 50;
-const minHeight = 5;
-const maxHeight = 25;
-const minMines = 1;
-const getMaxMines = (width: number, height: number) => Math.floor(width * height * 0.6);
+export const minWidth = 5;
+export const maxWidth = 50;
+export const minHeight = 5;
+export const maxHeight = 25;
+export const minMines = 1;
+export const getMaxMines = (width: number, height: number): number => Math.floor(width * height * 0.6);
 
 export const CustomFieldMenu: React.FC = () => {
   const [config, setConfig] = useState<Partial<CustomConfigType>>({});
