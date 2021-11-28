@@ -8,7 +8,7 @@ import { useGameStore } from './state/state';
 
 export const customFieldFormat = `[width(${minWidth}-${maxWidth}),height(${minHeight}-${maxHeight}),mines(${minMines}-width*height*0.6)]`;
 const { flags } = meow(
-  `Usage: minesweeper
+  `Usage: mnswpr
 
 Options:
 
@@ -20,9 +20,9 @@ Options:
         
   --quick [b|i|e|width,height,mines], -Q [b|i|e|width,height,mines] 
         Start game directly with one of the difficulties: [b|i|e] or a custom field: ${customFieldFormat}
-        Example:
-          --quick b #start game with beginner difficulty
-          -Q 10,20,60 #start game with custom field width:10 height:20 mines:60
+        Examples:
+          mnswpr --quick b #start game with beginner difficulty
+          mnswpr -Q 10,20,60 #start game with custom field width:10 height:20 mines:60
 `,
   {
     flags: {
