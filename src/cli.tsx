@@ -47,7 +47,7 @@ export type CliFlagsType = Partial<typeof flags>;
 
 flags.legacy && useGameStore.getState().switchDrawingMode();
 
-const number = `[1-9][0-9]?`;
+const number = `[1-9][0-9]*`;
 if (flags.quick) {
   const match = flags.quick.match(`^(?<width>${number}),(?<height>${number}),(?<mines>${number})$|^(?<diff>[b|i|e])$`);
   if (!match) {
