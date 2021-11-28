@@ -37,7 +37,7 @@ Options:
         Align the field to the center of the terminal
         
   --quick [b|i|e|width,height,mines], -Q [b|i|e|width,height,mines] 
-        Start game directly with one of the difficulties: [b|i|e] or a custom field: ${customFieldFormat}
+        Start game directly with one of the difficulties: [b|i|e] or a custom field: [width(5-50),height(5-25),mines(1-width*height*0.6)]
         Examples:
           mnswpr --quick b #start game with beginner difficulty
           mnswpr -Q 10,20,60 #start game with custom field width:10 height:20 mines:60
