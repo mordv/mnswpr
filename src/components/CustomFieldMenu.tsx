@@ -8,7 +8,17 @@ export const maxWidth = 50;
 export const minHeight = 5;
 export const maxHeight = 25;
 export const minMines = 1;
-export const getMaxMines = (width: number, height: number): number => Math.floor(width * height * 0.6);
+const getMaxMines = (width: number, height: number): number => Math.floor(width * height * 0.6);
+
+export const validateFieldSize = (width: number, height: number, mines: number): CustomConfigType | undefined =>
+  isWidthValid(width) && isHeightValid(height) && isMinesValid(width, height, mines)
+    ? { width, height, mines }
+    : undefined;
+
+const isWidthValid = (width: number) => width >= minWidth && width <= maxWidth;
+const isHeightValid = (height: number) => height >= minHeight && height <= maxHeight;
+const isMinesValid = (width: number, height: number, mines: number) =>
+  mines >= minMines && mines <= getMaxMines(width, height);
 
 export const CustomFieldMenu: React.FC = () => {
   const [config, setConfig] = useState<Partial<CustomConfigType>>({});
@@ -40,7 +50,7 @@ export const CustomFieldMenu: React.FC = () => {
     (s: string) => {
       const parsed = Number.parseInt(s);
       if (!config.width) {
-        if (parsed >= minWidth && parsed <= maxWidth) {
+        if (isWidthValid(parsed)) {
           setConfig((c) => ({ ...c, width: parsed }));
           setError(false);
           setValue(``);
@@ -48,7 +58,7 @@ export const CustomFieldMenu: React.FC = () => {
           setError(true);
         }
       } else if (!config.height) {
-        if (parsed >= minHeight && parsed <= maxHeight) {
+        if (isHeightValid(parsed)) {
           setConfig((c) => ({ ...c, height: parsed }));
           setError(false);
           setValue(``);
@@ -56,8 +66,7 @@ export const CustomFieldMenu: React.FC = () => {
           setError(true);
         }
       } else {
-        const maxMines = getMaxMines(config.width, config.height);
-        if (parsed >= minMines && parsed <= maxMines) {
+        if (isMinesValid(config.width, config.height, parsed)) {
           startGame(`custom`, { ...(config as CustomConfigType), mines: parsed });
         } else {
           setError(true);

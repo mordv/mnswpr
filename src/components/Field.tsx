@@ -9,7 +9,11 @@ import { ControlsHints } from './ControlsHints';
 
 const mineNumberToColor = (amount: MinesAroundType): string => theme.colors.numbers[amount - 1];
 
-export const Field: React.FC = () => {
+interface FieldProps {
+  center?: boolean;
+}
+
+export const Field: React.FC<FieldProps> = ({ center }) => {
   const {
     position: [x, y],
     height,
@@ -47,7 +51,7 @@ export const Field: React.FC = () => {
   );
 
   return (
-    <>
+    <Box flexDirection={`column`} alignItems={center ? `center` : `flex-start`} justifyContent={`center`}>
       <FieldHeader />
       <Box />
       <Text backgroundColor={theme.colors.background}>
@@ -66,7 +70,7 @@ export const Field: React.FC = () => {
         ))}
       </Text>
       <ControlsHints />
-    </>
+    </Box>
   );
 };
 
