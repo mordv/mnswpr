@@ -7,10 +7,16 @@ import { capitalize } from '../utils/utils';
 import { useSymbol } from '../hooks/useSymbol';
 import Link from 'ink-link';
 import { ControlsHints } from './ControlsHints';
+import { clear } from '../cli';
 
 export const MainMenu: React.FC = () => {
   const { exit } = useApp();
-  useInput((_, { escape }) => escape && exit());
+  useInput((_, { escape }) => {
+    if (escape) {
+      clear();
+      exit();
+    }
+  });
 
   const startGame = useGameStore((s) => s.startGame);
   const setupCustomField = useGameStore((s) => s.setupCustomField);
