@@ -4,16 +4,12 @@ import SelectInput from 'ink-select-input';
 import { Box, Text } from 'ink';
 import { difficulties, DifficultyType, useGameStore } from '../state/state';
 import { capitalize } from '../utils/utils';
-import { useSymbol } from '../hooks/useSymbol';
-import Link from 'ink-link';
 import { ControlsHints } from './ControlsHints';
 
-export const MainMenu: React.FC = () => {
+export const MainMenu: React.VFC = () => {
   const startGame = useGameStore((s) => s.startGame);
   const setupCustomField = useGameStore((s) => s.setupCustomField);
-  const bomb = useSymbol(`bomb`);
-  const faceWin = useSymbol(`faceWin`);
-  const star = useSymbol(`star`);
+  const emojiMode = useGameStore((s) => s.drawingMode === `emoji`);
 
   const handleSelect = useCallback(
     (diff: DifficultyType) => (diff === `custom` ? setupCustomField() : startGame(diff)),
@@ -21,25 +17,18 @@ export const MainMenu: React.FC = () => {
   );
 
   return (
-    <>
-      <Box marginBottom={1}>
+    <Box flexDirection={`column`} alignItems={`center`} justifyContent={`center`} width={`100%`}>
+      {emojiMode && <Text>🚩</Text>}
+      <Box justifyContent={`center`} width={`100%`}>
         <Gradient name={`morning`}>
-          <Text>
-            {bomb} MINESWEEPER {bomb}
-          </Text>
+          <Text>MINESWEEPER</Text>
         </Gradient>
       </Box>
+      <Box height={1} />
       <SelectDifficulty onSelect={handleSelect} />
       <Box height={1} />
-      <Link url={`https://github.com/mordv/mnswpr`}>
-        <Gradient name={`morning`}>
-          <Text>
-            {star}Star project on GitHub{faceWin}
-          </Text>
-        </Gradient>
-      </Link>
       <ControlsHints />
-    </>
+    </Box>
   );
 };
 
@@ -50,7 +39,7 @@ interface SelectDifficultyProps {
 const items = difficulties.map((value) => ({ value, label: capitalize(value) }));
 const colors = [`cristal`, `teen`, `morning`, `instagram`];
 const colorMapping = Object.fromEntries(items.map(({ label }, i) => [label, colors[i]]));
-const SelectDifficulty: React.FC<SelectDifficultyProps> = ({ onSelect }) => {
+const SelectDifficulty: React.VFC<SelectDifficultyProps> = ({ onSelect }) => {
   const [highlighted, setHighlighted] = useState(items[0].label);
   const legacyMode = useGameStore((s) => s.drawingMode === `legacy`);
   return (

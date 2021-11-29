@@ -20,7 +20,7 @@ const isHeightValid = (height: number) => height >= minHeight && height <= maxHe
 const isMinesValid = (width: number, height: number, mines: number) =>
   mines >= minMines && mines <= getMaxMines(width, height);
 
-export const CustomFieldMenu: React.FC = () => {
+export const CustomFieldMenu: React.VFC = () => {
   const [config, setConfig] = useState<Partial<CustomConfigType>>({});
   const [value, setValue] = useState(``);
   const [error, setError] = useState(false);
@@ -77,19 +77,17 @@ export const CustomFieldMenu: React.FC = () => {
   );
 
   return (
-    <>
-      <Box>
-        <Box marginRight={1}>
-          <Text color={error ? `red` : undefined}>
-            {!config.width
-              ? `Width(${minWidth}-${maxWidth}):`
-              : !config.height
-              ? `Height(${minHeight}-${maxHeight}):`
-              : `Mines count(${minMines}-${getMaxMines(config.width, config.height)}):`}
-          </Text>
-        </Box>
-        <TextInput value={value} onChange={handleChange} onSubmit={handleSubmit} />
+    <Box minWidth={25}>
+      <Box marginRight={1}>
+        <Text color={error ? `red` : undefined}>
+          {!config.width
+            ? `Width(${minWidth}-${maxWidth}):`
+            : !config.height
+            ? `Height(${minHeight}-${maxHeight}):`
+            : `Mines count(${minMines}-${getMaxMines(config.width, config.height)}):`}
+        </Text>
       </Box>
-    </>
+      <TextInput value={value} onChange={handleChange} onSubmit={handleSubmit} />
+    </Box>
   );
 };

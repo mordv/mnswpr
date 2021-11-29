@@ -2,8 +2,9 @@ import React from 'react';
 import { useGameStore } from '../state/state';
 import { Box, Newline, Text, useInput } from 'ink';
 import { useSymbol } from '../hooks/useSymbol';
+import Link from 'ink-link';
 
-export const ControlsHints: React.FC = () => {
+export const ControlsHints: React.VFC = () => {
   const drawingMode = useGameStore((s) => s.drawingMode);
   const switchDrawingMode = useGameStore((s) => s.switchDrawingMode);
   const showHelp = useGameStore((s) => s.showHelp);
@@ -19,7 +20,7 @@ export const ControlsHints: React.FC = () => {
   const bomb = useSymbol(`bomb`);
 
   return showHelp || !helpWasShown ? (
-    <Box flexDirection={`column`} borderStyle={`round`} width={26}>
+    <Box flexDirection={`column`} borderStyle={`round`} minWidth={18}>
       <Text>[h] {showHelp ? `Hide help` : `Show help`}</Text>
       {showHelp && (
         <Text>
@@ -36,6 +37,11 @@ export const ControlsHints: React.FC = () => {
           [ctrl+r] Restart
           <Newline />
           [escape] {gameStatus === `startScreen` ? `Exit` : `Menu`}
+          <Newline />
+          <Newline />
+          <Link url={`https://github.com/mordv/mnswpr`}>
+            <Text>GitHub</Text>
+          </Link>
         </Text>
       )}
     </Box>

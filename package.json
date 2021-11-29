@@ -1,6 +1,6 @@
 {
   "name": "mnswpr",
-  "description": "A Minesweeper game for your terminal",
+  "description": "Minesweeper game for your terminal",
   "version": "1.0.1",
   "keywords": [
     "react",
