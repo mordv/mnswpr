@@ -68,4 +68,4 @@ if (flags.quick) {
   }
 }
 
-export const { clear } = render(<App center={flags.center} />);
+export const { clear } = render(<App center={flags.center} />, { exitOnCtrlC: false });
