@@ -5,18 +5,20 @@ import meow from 'meow';
 import { App } from './App';
 import { maxHeight, maxWidth, minHeight, minMines, minWidth, validateFieldSize } from './components/CustomFieldMenu';
 import { useGameStore } from './state/state';
+import { enterFullscreen, exitFullscreen } from './utils/terminalUtils';
 
 export const customFieldFormat = `[width(${minWidth}-${maxWidth}),height(${minHeight}-${maxHeight}),mines(${minMines}-width*height*0.6)]`;
 const { flags } = meow(
   `Usage: mnswpr
 
-Options:
+Press h to show game controls.
 
-  --legacy, -L
+Options:
+  --fullscreen, -F
+        Run game in fullscreen.
+        
+  --legacy, -L  (or press l)
         Legacy mode. Use this if your terminal doesn't support emojis
-	      
-  --center, -C
-        Align the field to the center of the terminal
         
   --quick [b|i|e|width,height,mines], -Q [b|i|e|width,height,mines] 
         Start game directly with one of the difficulties: [b|i|e] or a custom field: ${customFieldFormat}
@@ -26,14 +28,13 @@ Options:
 `,
   {
     flags: {
+      fullscreen: {
+        type: `boolean`,
+        alias: `F`,
+      },
       legacy: {
         type: `boolean`,
         alias: `L`,
-      },
-      center: {
-        type: `boolean`,
-        alias: `C`,
-        default: false,
       },
       quick: {
         type: `string`,
@@ -44,8 +45,6 @@ Options:
 );
 
 export type CliFlagsType = Partial<typeof flags>;
-
-flags.legacy && useGameStore.getState().switchDrawingMode();
 
 const number = `[1-9][0-9]*`;
 if (flags.quick) {
@@ -68,4 +67,11 @@ if (flags.quick) {
   }
 }
 
-export const { clear } = render(<App center={flags.center} />, { exitOnCtrlC: false });
+flags.legacy && useGameStore.getState().switchDrawingMode();
+flags.fullscreen && enterFullscreen();
+const { clear, waitUntilExit } = render(<App fullscreen={flags.fullscreen} />, {
+  exitOnCtrlC: false,
+});
+waitUntilExit().then(() => flags.fullscreen && exitFullscreen());
+
+export { clear };

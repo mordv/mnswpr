@@ -9,11 +9,7 @@ import { ControlsHints } from './ControlsHints';
 
 const mineNumberToColor = (amount: MinesAroundType): string => theme.colors.numbers[amount - 1];
 
-interface FieldProps {
-  center?: boolean;
-}
-
-export const Field: React.FC<FieldProps> = ({ center }) => {
+export const Field: React.VFC = () => {
   const {
     position: [x, y],
     height,
@@ -51,7 +47,7 @@ export const Field: React.FC<FieldProps> = ({ center }) => {
   );
 
   return (
-    <Box flexDirection={`column`} alignItems={center ? `center` : `flex-start`} justifyContent={`center`}>
+    <Box flexDirection={`column`} alignItems={`center`} justifyContent={`center`} width={`100%`}>
       <FieldHeader />
       <Box />
       <Text backgroundColor={theme.colors.background}>
@@ -80,7 +76,7 @@ interface CellProps {
   selected?: boolean;
 }
 
-const Cell: React.FC<CellProps> = ({ state: { flagged, mine, opened, minesAround, diedAt }, selected, gameOver }) => {
+const Cell: React.VFC<CellProps> = ({ state: { flagged, mine, opened, minesAround, diedAt }, selected, gameOver }) => {
   const cell = useSymbol(
     opened && !mine ? `openedCell` : (opened || gameOver) && mine ? `bomb` : flagged ? `flag` : `closedCell`
   );

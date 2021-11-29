@@ -12,7 +12,7 @@ const selector = ({ minesCount, width, startedAt, endedAt }: GameStoreType) => (
   endedAt,
 });
 
-export const FieldHeader: React.FC = () => {
+export const FieldHeader: React.VFC = () => {
   const [secondsSpent, setSecondsSpent] = useState<string>();
 
   const flagsCount = useGameStore(flagCountSelector);

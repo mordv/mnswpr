@@ -28,14 +28,15 @@ The interface works with emoji by default. If your terminal doesn't support it, 
 ```
 Usage: mnswpr
 
-Options:
+Press h to show game controls.
 
-  --legacy, -L
-        Legacy mode. Use this if your terminal doesn't support emojis
-	      
-  --center, -C
-        Align the field to the center of the terminal
+Options:
+  --fullscreen, -F
+        Run game in fullscreen.
         
+  --legacy, -L  (or press l)
+        Legacy mode. Use this if your terminal doesn't support emojis
+      
   --quick [b|i|e|width,height,mines], -Q [b|i|e|width,height,mines] 
         Start game directly with one of the difficulties: [b|i|e]
 	or a custom field: [width(5-50),height(5-25),mines(1-width*height*0.6)]
