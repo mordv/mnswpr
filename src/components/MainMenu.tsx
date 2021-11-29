@@ -1,23 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import Gradient from 'ink-gradient';
 import SelectInput from 'ink-select-input';
-import { Box, Text, useApp, useInput } from 'ink';
+import { Box, Text } from 'ink';
 import { difficulties, DifficultyType, useGameStore } from '../state/state';
 import { capitalize } from '../utils/utils';
 import { useSymbol } from '../hooks/useSymbol';
 import Link from 'ink-link';
 import { ControlsHints } from './ControlsHints';
-import { clear } from '../cli';
 
 export const MainMenu: React.FC = () => {
-  const { exit } = useApp();
-  useInput((_, { escape }) => {
-    if (escape) {
-      clear();
-      exit();
-    }
-  });
-
   const startGame = useGameStore((s) => s.startGame);
   const setupCustomField = useGameStore((s) => s.setupCustomField);
   const bomb = useSymbol(`bomb`);
