@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useGameStore } from '../state/state';
 import { Box, Newline, Text, useInput } from 'ink';
 import { useSymbol } from '../hooks/useSymbol';
 import Link from 'ink-link';
+import open from 'open';
 
+const repoUrl = `https://github.com/mordv/mnswpr`;
 export const ControlsHints: React.VFC = () => {
   const drawingMode = useGameStore((s) => s.drawingMode);
   const switchDrawingMode = useGameStore((s) => s.switchDrawingMode);
@@ -12,9 +14,12 @@ export const ControlsHints: React.VFC = () => {
   const toggleHints = useGameStore((s) => s.toggleHelp);
   const gameStatus = useGameStore((s) => s.gameStatus);
 
-  useInput((i) =>
-    i.toLowerCase() === `l` ? switchDrawingMode() : i.toLowerCase() === `h` ? toggleHints() : undefined
-  );
+  const handleOpen = useCallback(() => open(repoUrl).then(), []);
+
+  useInput((i) => {
+    const input = i.toLowerCase();
+    input === `l` ? switchDrawingMode() : input === `h` ? toggleHints() : input === `g` ? handleOpen() : undefined;
+  });
 
   const flag = useSymbol(`flag`);
   const bomb = useSymbol(`bomb`);
@@ -39,8 +44,8 @@ export const ControlsHints: React.VFC = () => {
           [escape] {gameStatus === `startScreen` ? `Exit` : `Menu`}
           <Newline />
           <Newline />
-          <Link url={`https://github.com/mordv/mnswpr`}>
-            <Text>GitHub</Text>
+          <Link url={repoUrl}>
+            <Text>[g] GitHub</Text>
           </Link>
         </Text>
       )}
