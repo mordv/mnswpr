@@ -31,9 +31,6 @@ Usage: mnswpr
 Press h to show game controls.
 
 Options:
-  --fullscreen, -F
-        Run game in fullscreen.
-        
   --legacy, -L  (or press l)
         Legacy mode. Use this if your terminal doesn't support emojis
       
